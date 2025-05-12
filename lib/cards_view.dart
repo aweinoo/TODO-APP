@@ -26,6 +26,7 @@ class CardsView extends StatefulWidget {
     this.showOnlyCompleted = false,
     this.onCompletedToggle,
     required Null Function(dynamic index) onDelete,
+    // required List<Task> tasks,
     // this.onDelete,
   });
 

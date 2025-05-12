@@ -47,8 +47,21 @@ class AddTaskPage extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             TextField(
+              showCursor: true,
+              cursorColor: const Color.fromARGB(255, 32, 100, 18),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                fontWeight: FontWeight.w100,
+              ),
               maxLines: 1,
               decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 32, 100, 18),
+                  ),
+                ),
                 filled: true,
                 fillColor: Color.fromARGB(255, 255, 255, 255),
                 labelText: 'Eg. Buy groceries',
@@ -79,11 +92,24 @@ class AddTaskPage extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             TextField(
+              showCursor: true,
+              cursorColor: const Color.fromARGB(255, 32, 100, 18),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                fontWeight: FontWeight.w100,
+              ),
               maxLines: 4,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Color.fromARGB(255, 255, 255, 255),
                 border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 32, 100, 18),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 24),
