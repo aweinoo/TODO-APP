@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
 import 'package:to_do_app/cards_view.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/add_task.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  // ignore: use_super_parameters
   const CustomAppBar({Key? key}) : super(key: key);
 
   @override
@@ -35,14 +33,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: <Widget>[
         IconButton(
           icon: const Icon(Icons.search_rounded),
-          tooltip: 'Search for the task',
-          onPressed: () {
-            print('Search Button was pressed');
-          },
-        ),
-        const SizedBox(width: 16.0),
-        IconButton(
-          icon: const Icon(Icons.notifications_outlined),
           onPressed: () {
             print('Notification Button was pressed');
           },
@@ -54,19 +44,33 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final List<Task> tasks;
+  final List<bool> isCompletedList;
   final Function(int) onCompletedToggle;
   const HomePage({
-    Key? key,
-    required this.tasks,
+    super.key,
+    required this.isCompletedList,
     required this.onCompletedToggle,
-  }) : super(key: key);
+    required List<Task> tasks,
+    required void Function(Task task) onAddTask,
+    required void Function(int index, Task updatedTask) onUpdateTask,
+    required void Function(int index) onDeleteTask,
+    required void Function(int index) onToggleTaskCompletion,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  List<bool> isCompletedList = List.generate(5, (index) => false);
+
+  // ✅ add onCompletedToggle here
+  void onCompletedToggle(int index) {
+    setState(() {
+      isCompletedList[index] = !isCompletedList[index];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,90 +103,22 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 34),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: _TaskCardList(
-                tasks: widget.tasks,
-                onCompletedToggle: widget.onCompletedToggle,
+              child: CardsView(
+                isCompletedList: isCompletedList,
+                onCompletedToggle: onCompletedToggle,
+                onDelete: (index) {
+                  setState(() {
+                    isCompletedList.removeAt(index);
+                  });
+                },
+
+                // ✅ pass callback
               ),
             ),
           ],
         ),
       ),
       // bottomNavigationBar: BottomNavBar(),
-    );
-  }
-}
-
-class _TaskCardList extends StatelessWidget {
-  final List<Task> tasks;
-  final Function(int) onCompletedToggle;
-
-  const _TaskCardList({
-    Key? key,
-    required this.tasks,
-    required this.onCompletedToggle,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: tasks.length,
-      itemBuilder: (context, index) {
-        final task = tasks[index];
-        return Card(
-          elevation: 2,
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(task.description, style: const TextStyle(fontSize: 14)),
-                const SizedBox(height: 8),
-                Text(
-                  'Deadline: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dateTime)}',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton.icon(
-                      onPressed: () {
-                        // Implement edit functionality
-                      },
-                      icon: const Icon(Icons.edit),
-                      label: const Text('Edit'),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // Implement delete functionality
-                      },
-                      icon: const Icon(Icons.delete),
-                      label: const Text('Delete'),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        onCompletedToggle(index);
-                      },
-                      icon: const Icon(Icons.check_box_outline_blank),
-                      label: const Text('Mark as Complete'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

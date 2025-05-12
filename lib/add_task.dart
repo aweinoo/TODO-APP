@@ -1,9 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import the intl package
-import 'package:to_do_app/bottomnavbar.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert'; // For JSON encoding/decoding
+
+class Task {
+  String title;
+  String description;
+  DateTime dateTime;
+  bool isCompleted;
+
+  Task({
+    required this.title,
+    required this.description,
+    required this.dateTime,
+    this.isCompleted = false,
+  });
+
+  // Factory method to create a Task object from JSON
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      title: json['title'],
+      description: json['description'],
+      dateTime: DateTime.parse(json['dateTime']),
+      isCompleted: json['isCompleted'] ?? false,
+    );
+  }
+
+  // Method to convert a Task object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'dateTime': dateTime.toIso8601String(),
+      'isCompleted': isCompleted,
+    };
+  }
+}
 
 class AddTaskPage extends StatefulWidget {
-  final Function(Task) onAddTask; // Callback to pass data back
+  final Function(Task) onAddTask;
   const AddTaskPage({Key? key, required this.onAddTask}) : super(key: key);
 
   @override
@@ -234,24 +269,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       description: descriptionController.text,
                       dateTime: selectedDateTime!,
                     );
-                    widget.onAddTask(newTask); // Send data back
-                    // Navigate to the Home page
-                    Navigator.pop(context); // Pop the Add Task page
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(
-                        context,
-                      ); // Pop again if possible to go back to Home
-                    } else {
-                      // If not possible to pop further, navigate to Home directly
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BottomNavBar(),
-                        ), // Assuming BottomNavBar is your main navigation
-                      );
-                    }
+                    widget.onAddTask(newTask);
+                    Navigator.pop(context);
                   } else {
-                    // Show a message if any field is empty
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
@@ -272,16 +292,4 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ),
     );
   }
-}
-
-class Task {
-  String title;
-  String description;
-  DateTime dateTime;
-
-  Task({
-    required this.title,
-    required this.description,
-    required this.dateTime,
-  });
 }

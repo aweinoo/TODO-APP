@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/home.dart';
 import 'package:to_do_app/add_task.dart';
 import 'package:to_do_app/task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -12,19 +14,60 @@ class BottomNavBar extends StatefulWidget {
 
 class _NavBarState extends State<BottomNavBar> {
   int index = 0;
-  List<Task> tasks = []; // Store Task objects
+  List<Task> tasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks(); // Load tasks when the app starts
+  }
+
+  // Load tasks from SharedPreferences
+  Future<void> _loadTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? jsonString = prefs.getString('tasks');
+    if (jsonString != null) {
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      setState(() {
+        tasks = jsonList.map((json) => Task.fromJson(json)).toList();
+      });
+    }
+  }
+
+  // Save tasks to SharedPreferences
+  Future<void> _saveTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String jsonString = jsonEncode(
+      tasks.map((task) => task.toJson()).toList(),
+    );
+    await prefs.setString('tasks', jsonString);
+  }
 
   void _addTask(Task task) {
     setState(() {
       tasks.add(task);
+      _saveTasks();
     });
   }
 
-  void onCompletedToggle(int taskIndex) {
+  void _updateTask(int index, Task updatedTask) {
     setState(() {
-      // Access the correct Task object using the index
-      // No need to store booleans separately anymore
-      // tasks[taskIndex].isCompleted = !tasks[taskIndex].isCompleted;
+      tasks[index] = updatedTask;
+      _saveTasks();
+    });
+  }
+
+  void _deleteTask(int index) {
+    setState(() {
+      tasks.removeAt(index);
+      _saveTasks();
+    });
+  }
+
+  void _toggleTaskCompletion(int index) {
+    setState(() {
+      tasks[index].isCompleted = !tasks[index].isCompleted;
+      _saveTasks();
     });
   }
 
@@ -35,9 +78,24 @@ class _NavBarState extends State<BottomNavBar> {
         child: IndexedStack(
           index: index,
           children: [
-            HomePage(tasks: tasks, onCompletedToggle: onCompletedToggle),
+            HomePage(
+              tasks: tasks,
+              onAddTask: _addTask,
+              onUpdateTask: _updateTask,
+              onDeleteTask: _deleteTask,
+              onToggleTaskCompletion: _toggleTaskCompletion,
+              isCompletedList: [],
+              onCompletedToggle: (int) {},
+            ),
             AddTaskPage(onAddTask: _addTask),
-            TaskPage(tasks: tasks, onCompletedToggle: onCompletedToggle),
+            TaskPage(
+              tasks: tasks,
+              onUpdateTask: _updateTask,
+              onDeleteTask: _deleteTask,
+              onToggleTaskCompletion: _toggleTaskCompletion,
+              isCompletedList: [],
+              onCompletedToggle: (int) {},
+            ),
           ],
         ),
       ),
