@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/cards_view.dart';
+// import 'package:to_do_app/cards_view.dart';
+import 'package:to_do_app/add_task.dart'; // Import Task
+import 'package:intl/intl.dart';
 
 class TaskPage extends StatefulWidget {
-  final List<bool> isCompletedList;
+  final List<Task> tasks;
   final Function(int) onCompletedToggle;
   const TaskPage({
-    super.key,
-    required this.isCompletedList,
+    Key? key,
+    required this.tasks,
     required this.onCompletedToggle,
-  });
+  }) : super(key: key);
 
   @override
   State<TaskPage> createState() => _TaskPageState();
@@ -17,9 +19,6 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  // 🔥 Move shared state here
-  List<bool> isCompletedList = List.generate(5, (index) => false);
 
   @override
   void initState() {
@@ -55,41 +54,26 @@ class _TaskPageState extends State<TaskPage>
                   Tab(text: "Pending"),
                   Tab(text: "Completed"),
                 ],
-                indicatorWeight: 2,
-                indicatorColor: Color.fromARGB(255, 249, 182, 78),
-                labelColor: Color(0xFFF9B64E),
-                unselectedLabelColor: Colors.black,
-                labelPadding: EdgeInsets.only(top: 16),
-                unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                indicatorColor: const Color(0xFFF9B64E),
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
               ),
             ),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  AllTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                  _AllTaskPage(
+                    tasks: widget.tasks,
+                    onCompletedToggle: widget.onCompletedToggle,
                   ),
-                  PendingTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                  _PendingTaskPage(
+                    tasks: widget.tasks,
+                    onCompletedToggle: widget.onCompletedToggle,
                   ),
-                  CompletedTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                  _CompletedTaskPage(
+                    tasks: widget.tasks,
+                    onCompletedToggle: widget.onCompletedToggle,
                   ),
                 ],
               ),
@@ -101,74 +85,237 @@ class _TaskPageState extends State<TaskPage>
   }
 }
 
-// ✅ Pass shared state & toggle function to child pages
-
-class AllTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
+class _AllTaskPage extends StatelessWidget {
+  final List<Task> tasks;
   final Function(int) onCompletedToggle;
 
-  const AllTaskPage({
-    super.key,
-    required this.isCompletedList,
+  const _AllTaskPage({
+    Key? key,
+    required this.tasks,
     required this.onCompletedToggle,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
-      child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
-        onDelete: (index) {},
+      child: ListView.builder(
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    task.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(task.description, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Deadline: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dateTime)}',
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement edit functionality
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement delete functionality
+                        },
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Delete'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          onCompletedToggle(index);
+                        },
+                        icon: const Icon(Icons.check_box_outline_blank),
+                        label: const Text('Mark as Complete'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class PendingTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
+class _PendingTaskPage extends StatelessWidget {
+  final List<Task> tasks;
   final Function(int) onCompletedToggle;
 
-  const PendingTaskPage({
-    super.key,
-    required this.isCompletedList,
+  const _PendingTaskPage({
+    Key? key,
+    required this.tasks,
     required this.onCompletedToggle,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final pendingTasks =
+        tasks
+            .where((task) => false)
+            .toList(); // Modify this based on your completion logic
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
-      child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
-        showOnlyPending: true,
-        onDelete: (index) {},
+      child: ListView.builder(
+        itemCount: pendingTasks.length,
+        itemBuilder: (context, index) {
+          final task = pendingTasks[index];
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    task.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(task.description, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Deadline: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dateTime)}',
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement edit functionality
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement delete functionality
+                        },
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Delete'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          onCompletedToggle(index);
+                        },
+                        icon: const Icon(Icons.check_box_outline_blank),
+                        label: const Text('Mark as Complete'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class CompletedTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
+class _CompletedTaskPage extends StatelessWidget {
+  final List<Task> tasks;
   final Function(int) onCompletedToggle;
 
-  const CompletedTaskPage({
-    super.key,
-    required this.isCompletedList,
+  const _CompletedTaskPage({
+    Key? key,
+    required this.tasks,
     required this.onCompletedToggle,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final completedTasks =
+        tasks
+            .where((task) => true)
+            .toList(); // Modify this based on your completion logic
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
-      child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
-        showOnlyCompleted: true,
-        onDelete: (index) {},
+      child: ListView.builder(
+        itemCount: completedTasks.length,
+        itemBuilder: (context, index) {
+          final task = completedTasks[index];
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    task.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(task.description, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Deadline: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dateTime)}',
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement edit functionality
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          // Implement delete functionality
+                        },
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Delete'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          onCompletedToggle(index);
+                        },
+                        icon: const Icon(Icons.check_box_outline_blank),
+                        label: const Text('Mark as Complete'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

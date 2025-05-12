@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/home.dart';
-import 'package:to_do_app/add_task.dart'; //Removed Unused Import
-import 'package:to_do_app/task.dart'; //Removed Unused Import
+import 'package:to_do_app/add_task.dart';
+import 'package:to_do_app/task.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  const BottomNavBar({Key? key}) : super(key: key);
 
   @override
   State<BottomNavBar> createState() => _NavBarState();
@@ -12,11 +12,19 @@ class BottomNavBar extends StatefulWidget {
 
 class _NavBarState extends State<BottomNavBar> {
   int index = 0;
-  List<bool> isCompletedList = List.generate(5, (_) => false);
+  List<Task> tasks = []; // Store Task objects
 
-  void onCompletedToggle(int i) {
+  void _addTask(Task task) {
     setState(() {
-      isCompletedList[i] = !isCompletedList[i];
+      tasks.add(task);
+    });
+  }
+
+  void onCompletedToggle(int taskIndex) {
+    setState(() {
+      // Access the correct Task object using the index
+      // No need to store booleans separately anymore
+      // tasks[taskIndex].isCompleted = !tasks[taskIndex].isCompleted;
     });
   }
 
@@ -27,18 +35,12 @@ class _NavBarState extends State<BottomNavBar> {
         child: IndexedStack(
           index: index,
           children: [
-            HomePage(
-              isCompletedList: isCompletedList,
-              onCompletedToggle: onCompletedToggle,
-            ),
-            AddTaskPage(), // Use the placeholder
-            TaskPage(
-              isCompletedList: isCompletedList,
-              onCompletedToggle: onCompletedToggle,
-            ),
+            HomePage(tasks: tasks, onCompletedToggle: onCompletedToggle),
+            AddTaskPage(onAddTask: _addTask),
+            TaskPage(tasks: tasks, onCompletedToggle: onCompletedToggle),
           ],
         ),
-      ), // Added body
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
         onTap: (value) {
@@ -48,7 +50,6 @@ class _NavBarState extends State<BottomNavBar> {
             });
           }
         },
-
         elevation: 0,
         items: [
           const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
@@ -57,14 +58,14 @@ class _NavBarState extends State<BottomNavBar> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddTaskPage()),
+                  MaterialPageRoute(
+                    builder: (context) => AddTaskPage(onAddTask: _addTask),
+                  ),
                 );
               },
               child: Icon(Icons.add_circle_outline),
             ),
             label: "Add task",
-            // icon: Icon(Icons.add_circle_outline),
-            // label: "Add task",
           ),
           const BottomNavigationBarItem(icon: Icon(Icons.check), label: "Task"),
         ],
