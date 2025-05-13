@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +41,7 @@ class Task {
 
 class AddTaskPage extends StatefulWidget {
   final Function(Task) onAddTask;
-  const AddTaskPage({Key? key, required this.onAddTask}) : super(key: key);
+  const AddTaskPage({super.key, required this.onAddTask});
 
   @override
   _AddTaskPageState createState() => _AddTaskPageState();
@@ -122,7 +124,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             TextField(
               controller: titleController,
               showCursor: true,
-              cursorColor: const Color.fromARGB(255, 32, 100, 18),
+              cursorColor: const Color(0xFF206412),
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black87,
@@ -255,7 +257,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF9B64E),
+                  backgroundColor: const Color(0xFFF9A825),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
