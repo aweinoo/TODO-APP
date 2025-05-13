@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  const BottomNavBar({Key? key}) : super(key: key);
 
   @override
   State<BottomNavBar> createState() => _NavBarState();
@@ -79,13 +79,12 @@ class _NavBarState extends State<BottomNavBar> {
           index: index,
           children: [
             HomePage(
-              context as List<bool>, // Pass the required positional argument
               tasks: tasks,
               onAddTask: _addTask,
               onUpdateTask: _updateTask,
               onDeleteTask: _deleteTask,
               onToggleTaskCompletion: _toggleTaskCompletion,
-              completedList: [],
+              isCompletedList: [],
               onCompletedToggle: (int) {},
             ),
             AddTaskPage(onAddTask: _addTask),

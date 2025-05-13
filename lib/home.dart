@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:to_do_app/add_task.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -44,12 +44,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final List<bool> completedList;
+  final List<bool> isCompletedList;
   final Function(int) onCompletedToggle;
-  const HomePage(
-    List<bool> isCompletedList, {
+  const HomePage({
     super.key,
-    required this.completedList,
+    required this.isCompletedList,
     required this.onCompletedToggle,
     required List<Task> tasks,
     required void Function(Task task) onAddTask,

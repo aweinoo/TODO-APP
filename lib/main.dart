@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/add_task.dart';
+import 'package:to_do_app/bottomnavbar.dart';
 import 'package:to_do_app/cards_view.dart';
 import 'package:to_do_app/createnewacc.dart';
 import 'package:to_do_app/forgotpasswordpage.dart';
@@ -22,14 +23,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ForgotPasswordPage(),
+      home: BottomNavBar(),
       debugShowCheckedModeBanner: false,
       title: 'To Do App', //Added title
       routes: {
         '/homepage':
             (context) => HomePage(
-              context as List<bool>,
-              completedList: [false],
+              isCompletedList: [false],
               onCompletedToggle: (int index) {},
               tasks: [],
               onAddTask: (Task task) {},
