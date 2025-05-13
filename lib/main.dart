@@ -9,6 +9,7 @@ import 'package:to_do_app/loginpage.dart';
 import 'package:to_do_app/newpassword.dart';
 import 'package:to_do_app/profile.dart';
 import 'package:to_do_app/registerpage.dart';
+import 'package:to_do_app/searchtask.dart';
 import 'package:to_do_app/verifycode.dart';
 
 void main() {
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
         '/newpasswordpage': (context) => NewPasswordPage(),
         '/getstartedpage': (context) => GetStartedPage(),
         'verifycodepage': (context) => VerifyCodePage(),
+        '/searchtaskpage': (context) => SearchTaskPage(),
       },
     );
   }
