@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
-// import 'package:to_do_app/add_task.dart';
+import 'package:to_do_app/add_task.dart';
+import 'package:to_do_app/cards_view.dart';
+import 'package:to_do_app/createnewacc.dart';
 import 'package:to_do_app/forgotpasswordpage.dart';
+import 'package:to_do_app/getstarted.dart';
+import 'package:to_do_app/home.dart';
+import 'package:to_do_app/loginpage.dart';
+import 'package:to_do_app/newpassword.dart';
+import 'package:to_do_app/profile.dart';
+import 'package:to_do_app/registerpage.dart';
+import 'package:to_do_app/verifycode.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +24,51 @@ class MyApp extends StatelessWidget {
       home: ForgotPasswordPage(),
       debugShowCheckedModeBanner: false,
       title: 'To Do App', //Added title
+      routes: {
+        '/homepage':
+            (context) => HomePage(
+              context as List<bool>,
+              completedList: [false],
+              onCompletedToggle: (int index) {},
+              tasks: [],
+              onAddTask: (Task task) {},
+              onUpdateTask: (int index, Task updatedTask) {},
+              onDeleteTask: (int index) {},
+              onToggleTaskCompletion: (int index) {},
+            ),
+        '/addtask': (context) => AddTaskPage(onAddTask: (task) {}),
+        '/CardsView':
+            (context) => CardsView(
+              isCompletedList: [false],
+              showOnlyPending: false,
+              showOnlyCompleted: false,
+              onCompletedToggle: (int index) {},
+              onDelete: (dynamic index) {},
+            ),
+        '/bottomnavbar':
+            (context) => BottomNavigationBar(
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.add),
+                  label: 'Add Task',
+                ),
+                BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasks'),
+              ],
+              currentIndex: 0,
+              onTap: (index) {
+                // Handle navigation
+              },
+            ),
+        '/forgotpassword': (context) => ForgotPasswordPage(),
+        '/loginpage': (context) => LoginPage(),
+        '/createaccountpage': (context) => CreateAccountPage(),
+        '/registerpage': (context) => RegisterPage(),
+        '/profilepage': (context) => ProfilePage(),
+        '/newpasswordpage': (context) => NewPasswordPage(),
+        '/getstartedpage': (context) => GetStartedPage(),
+        'verifycodepage': (context) => VerifyCodePage(),
+      },
     );
   }
 }

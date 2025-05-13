@@ -44,11 +44,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final List<bool> isCompletedList;
+  final List<bool> completedList;
   final Function(int) onCompletedToggle;
-  const HomePage({
+  const HomePage(
+    List<bool> isCompletedList, {
     super.key,
-    required this.isCompletedList,
+    required this.completedList,
     required this.onCompletedToggle,
     required List<Task> tasks,
     required void Function(Task task) onAddTask,
