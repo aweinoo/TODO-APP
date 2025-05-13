@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({Key? key}) : super(key: key);
+  const BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _NavBarState();
@@ -84,8 +84,8 @@ class _NavBarState extends State<BottomNavBar> {
               onUpdateTask: _updateTask,
               onDeleteTask: _deleteTask,
               onToggleTaskCompletion: _toggleTaskCompletion,
-              isCompletedList: [],
-              onCompletedToggle: (int) {},
+              isCompletedList: tasks.map((task) => task.isCompleted).toList(),
+              onCompletedToggle: _toggleTaskCompletion,
             ),
             AddTaskPage(onAddTask: _addTask),
             TaskPage(
@@ -93,8 +93,9 @@ class _NavBarState extends State<BottomNavBar> {
               onUpdateTask: _updateTask,
               onDeleteTask: _deleteTask,
               onToggleTaskCompletion: _toggleTaskCompletion,
-              isCompletedList: [],
-              onCompletedToggle: (int) {},
+              onAddTask: _addTask,
+              isCompletedList: tasks.map((task) => task.isCompleted).toList(),
+              onCompletedToggle: _toggleTaskCompletion,
             ),
           ],
         ),
@@ -110,7 +111,31 @@ class _NavBarState extends State<BottomNavBar> {
         },
         elevation: 0,
         items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          // const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomePage(
+                          tasks: tasks,
+                          onAddTask: _addTask,
+                          onUpdateTask: _updateTask,
+                          onDeleteTask: _deleteTask,
+                          onToggleTaskCompletion: _toggleTaskCompletion,
+                          isCompletedList:
+                              tasks.map((task) => task.isCompleted).toList(),
+                          onCompletedToggle: _toggleTaskCompletion,
+                        ),
+                  ),
+                );
+              },
+              child: Icon(Icons.home),
+            ),
+            label: "Home",
+          ),
           BottomNavigationBarItem(
             icon: GestureDetector(
               onTap: () {
@@ -125,7 +150,31 @@ class _NavBarState extends State<BottomNavBar> {
             ),
             label: "Add task",
           ),
-          const BottomNavigationBarItem(icon: Icon(Icons.check), label: "Task"),
+          // const BottomNavigationBarItem(icon: Icon(Icons.check), label: "Task"),
+          BottomNavigationBarItem(
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => TaskPage(
+                          tasks: tasks,
+                          onUpdateTask: _updateTask,
+                          onDeleteTask: _deleteTask,
+                          onToggleTaskCompletion: _toggleTaskCompletion,
+                          onAddTask: _addTask,
+                          isCompletedList:
+                              tasks.map((task) => task.isCompleted).toList(),
+                          onCompletedToggle: _toggleTaskCompletion,
+                        ),
+                  ),
+                );
+              },
+              child: Icon(Icons.check),
+            ),
+            label: "Task",
+          ),
         ],
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFFf5f5f5),

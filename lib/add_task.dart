@@ -270,9 +270,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       title: titleController.text,
                       description: descriptionController.text,
                       dateTime: selectedDateTime!,
+                      isCompleted: false,
                     );
                     widget.onAddTask(newTask);
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/homepage');
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

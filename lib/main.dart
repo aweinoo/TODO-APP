@@ -11,6 +11,7 @@ import 'package:to_do_app/newpassword.dart';
 import 'package:to_do_app/profile.dart';
 import 'package:to_do_app/registerpage.dart';
 import 'package:to_do_app/searchtask.dart';
+import 'package:to_do_app/task.dart';
 import 'package:to_do_app/verifycode.dart';
 
 void main() {
@@ -23,28 +24,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BottomNavBar(),
+      home: CreateAccountPage(),
       debugShowCheckedModeBanner: false,
       title: 'To Do App', //Added title
       routes: {
         '/homepage':
             (context) => HomePage(
-              isCompletedList: [false],
-              onCompletedToggle: (int index) {},
               tasks: [],
               onAddTask: (Task task) {},
               onUpdateTask: (int index, Task updatedTask) {},
               onDeleteTask: (int index) {},
               onToggleTaskCompletion: (int index) {},
+              isCompletedList: [],
+              onCompletedToggle: (int index) {},
             ),
         '/addtask': (context) => AddTaskPage(onAddTask: (task) {}),
-        '/CardsView':
+        '/cardsview':
             (context) => CardsView(
-              isCompletedList: [false],
               showOnlyPending: false,
               showOnlyCompleted: false,
-              onCompletedToggle: (int index) {},
               onDelete: (dynamic index) {},
+              tasks: [],
             ),
         '/bottomnavbar':
             (context) => BottomNavigationBar(
@@ -60,6 +60,16 @@ class MyApp extends StatelessWidget {
               onTap: (index) {
                 // Handle navigation
               },
+            ),
+        '/taskpage':
+            (context) => TaskPage(
+              tasks: [],
+              onAddTask: (Task task) {},
+              onUpdateTask: (int index, Task updatedTask) {},
+              onDeleteTask: (int index) {},
+              onToggleTaskCompletion: (int index) {},
+              isCompletedList: [],
+              onCompletedToggle: (int index) {},
             ),
         '/forgotpassword': (context) => ForgotPasswordPage(),
         '/loginpage': (context) => LoginPage(),

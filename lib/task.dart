@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/add_task.dart';
 import 'package:to_do_app/cards_view.dart';
+import 'package:to_do_app/add_task.dart'; // Import Task class
 
 class TaskPage extends StatefulWidget {
-  final List<bool> isCompletedList;
-  final Function(int) onCompletedToggle;
+  final List<Task> tasks; // Change to List<Task>
+  final Function(Task) onAddTask;
+  final Function(int, Task) onUpdateTask;
+  final Function(int) onDeleteTask;
+  final Function(int) onToggleTaskCompletion;
+
   const TaskPage({
     super.key,
-    required this.isCompletedList,
-    required this.onCompletedToggle,
-    required List<Task> tasks,
-    required void Function(int index, Task updatedTask) onUpdateTask,
-    required void Function(int index) onDeleteTask,
-    required void Function(int index) onToggleTaskCompletion,
+    required this.tasks,
+    required this.onAddTask,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
+    required this.onToggleTaskCompletion,
+    required List<bool> isCompletedList,
+    required void Function(int index) onCompletedToggle,
   });
 
   @override
@@ -22,9 +27,6 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  // 🔥 Move shared state here
-  List<bool> isCompletedList = List.generate(5, (index) => false);
 
   @override
   void initState() {
@@ -73,28 +75,19 @@ class _TaskPageState extends State<TaskPage>
                 controller: _tabController,
                 children: [
                   AllTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                    tasks: widget.tasks, // Pass tasks
+                    onToggleTaskCompletion:
+                        widget.onToggleTaskCompletion, // Pass callback
                   ),
                   PendingTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                    tasks: widget.tasks, // Pass tasks
+                    onToggleTaskCompletion:
+                        widget.onToggleTaskCompletion, // Pass callback
                   ),
                   CompletedTaskPage(
-                    isCompletedList: isCompletedList,
-                    onCompletedToggle: (index) {
-                      setState(() {
-                        isCompletedList[index] = !isCompletedList[index];
-                      });
-                    },
+                    tasks: widget.tasks, // Pass tasks
+                    onToggleTaskCompletion:
+                        widget.onToggleTaskCompletion, // Pass callback
                   ),
                 ],
               ),
@@ -109,13 +102,13 @@ class _TaskPageState extends State<TaskPage>
 // ✅ Pass shared state & toggle function to child pages
 
 class AllTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
-  final Function(int) onCompletedToggle;
+  final List<Task> tasks;
+  final Function(int) onToggleTaskCompletion;
 
   const AllTaskPage({
     super.key,
-    required this.isCompletedList,
-    required this.onCompletedToggle,
+    required this.tasks,
+    required this.onToggleTaskCompletion,
   });
 
   @override
@@ -123,8 +116,10 @@ class AllTaskPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
       child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
+        tasks: tasks, // Use tasks directly
+        onToggleTaskCompletion: onToggleTaskCompletion,
+        showOnlyPending: false,
+        showOnlyCompleted: false,
         onDelete: (index) {},
       ),
     );
@@ -132,13 +127,13 @@ class AllTaskPage extends StatelessWidget {
 }
 
 class PendingTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
-  final Function(int) onCompletedToggle;
+  final List<Task> tasks;
+  final Function(int) onToggleTaskCompletion;
 
   const PendingTaskPage({
     super.key,
-    required this.isCompletedList,
-    required this.onCompletedToggle,
+    required this.tasks,
+    required this.onToggleTaskCompletion,
   });
 
   @override
@@ -146,9 +141,10 @@ class PendingTaskPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
       child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
+        tasks: tasks, // Use tasks directly
+        onToggleTaskCompletion: onToggleTaskCompletion,
         showOnlyPending: true,
+        showOnlyCompleted: false,
         onDelete: (index) {},
       ),
     );
@@ -156,13 +152,13 @@ class PendingTaskPage extends StatelessWidget {
 }
 
 class CompletedTaskPage extends StatelessWidget {
-  final List<bool> isCompletedList;
-  final Function(int) onCompletedToggle;
+  final List<Task> tasks;
+  final Function(int) onToggleTaskCompletion;
 
   const CompletedTaskPage({
     super.key,
-    required this.isCompletedList,
-    required this.onCompletedToggle,
+    required this.tasks,
+    required this.onToggleTaskCompletion,
   });
 
   @override
@@ -170,8 +166,9 @@ class CompletedTaskPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 32, left: 12, right: 12),
       child: CardsView(
-        isCompletedList: isCompletedList,
-        onCompletedToggle: onCompletedToggle,
+        tasks: tasks, // Use tasks directly
+        onToggleTaskCompletion: onToggleTaskCompletion,
+        showOnlyPending: false,
         showOnlyCompleted: true,
         onDelete: (index) {},
       ),

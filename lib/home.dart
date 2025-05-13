@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/cards_view.dart';
-import 'package:intl/intl.dart';
-import 'package:to_do_app/add_task.dart';
+import 'package:to_do_app/add_task.dart'; // Assuming Task class is here
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({Key? key}) : super(key: key);
+  const CustomAppBar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -44,17 +43,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final List<bool> isCompletedList;
-  final Function(int) onCompletedToggle;
+  final List<Task> tasks; // Change to List<Task>
+  final Function(Task) onAddTask;
+  final Function(int, Task) onUpdateTask;
+  final Function(int) onDeleteTask;
+  final Function(int) onToggleTaskCompletion;
+
   const HomePage({
     super.key,
-    required this.isCompletedList,
-    required this.onCompletedToggle,
-    required List<Task> tasks,
-    required void Function(Task task) onAddTask,
-    required void Function(int index, Task updatedTask) onUpdateTask,
-    required void Function(int index) onDeleteTask,
-    required void Function(int index) onToggleTaskCompletion,
+    required this.tasks,
+    required this.onAddTask,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
+    required this.onToggleTaskCompletion,
+    required List<bool> isCompletedList,
+    required void Function(int index) onCompletedToggle,
   });
 
   @override
@@ -62,15 +65,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<bool> isCompletedList = List.generate(5, (index) => false);
-
-  // ✅ add onCompletedToggle here
-  void onCompletedToggle(int index) {
-    setState(() {
-      isCompletedList[index] = !isCompletedList[index];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,21 +98,16 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CardsView(
-                isCompletedList: isCompletedList,
-                onCompletedToggle: onCompletedToggle,
+                tasks: widget.tasks, // Pass the tasks from the widget
+                onToggleTaskCompletion: widget.onToggleTaskCompletion,
                 onDelete: (index) {
-                  setState(() {
-                    isCompletedList.removeAt(index);
-                  });
+                  widget.onDeleteTask(index); // Call the onDeleteTask callback
                 },
-
-                // ✅ pass callback
               ),
             ),
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavBar(),
     );
   }
 }
