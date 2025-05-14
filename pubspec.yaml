@@ -36,10 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.8
   intl: ^0.20.2
   shared_preferences: ^2.5.3
+  flutter_svg: ^2.0.7 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  
+  # or latest stable version
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -64,6 +68,8 @@ flutter:
     - assets/apple.png
     - assets/facebook.png
     - assets/google.png
+    - assets/illustration.svg
+    - assets/illustation.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

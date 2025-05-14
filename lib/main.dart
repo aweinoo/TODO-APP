@@ -10,7 +10,7 @@ import 'package:to_do_app/loginpage.dart';
 import 'package:to_do_app/newpassword.dart';
 import 'package:to_do_app/profile.dart';
 import 'package:to_do_app/registerpage.dart';
-import 'package:to_do_app/searchtask.dart';
+// import 'package:to_do_app/searchtask.dart';
 import 'package:to_do_app/task.dart';
 import 'package:to_do_app/verifycode.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CreateAccountPage(),
+      home: BottomNavBar(),
       debugShowCheckedModeBanner: false,
       title: 'To Do App', //Added title
       routes: {
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
         '/newpasswordpage': (context) => NewPasswordPage(),
         '/getstartedpage': (context) => GetStartedPage(),
         'verifycodepage': (context) => VerifyCodePage(),
-        '/searchtaskpage': (context) => SearchTaskPage(),
+        // '/searchtaskpage': (context) => SearchTaskPage(),
       },
     );
   }
